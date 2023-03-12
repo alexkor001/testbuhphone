@@ -1,44 +1,37 @@
 ---
-- name: Add the user
+- name: Add the user # добавление пользователя nginx
   ansible.builtin.user:
     name: "{{ nginx_user }}"
     system: true
     create_home: false
 
-- name: Install PHP-FPM
+- name: Install PHP-FPM # установка php-fpm
   apt:
     name=php-fpm 
     update_cache=yes
     state=latest
-  notify:
+  notify: # (handlers) enable, start php-fpm
     - php-fpm systemd
 - name: Install Nginx
   apt:
     name=nginx
     state=latest
-  notify:
+  notify: # (handlers) enable, start php-fpm
     - nginx systemd
-- name: Replace nginx.conf
+- name: Replace nginx.conf # Замена основного конфига
   template:
     src=templates/nginx.conf
     dest=/etc/nginx/nginx.conf
-- name: Create home directory for www
+- name: Create home directory for www # Создание директории с именем домена в www
   file:
     path: /var/www/{{ domain }}
     state: directory
 
-- name: Add virtual domain in NGINX
-  vars:
-    fastcgi_pass_path: /run/php/php7.4-fpm.sock
-  template:
+- name: Add virtual domain in NGINX  
+  # vars:
+  #   fastcgi_pass_path: /run/php/php7.4-fpm.sock
+  template:   # Замена  конфига в. хостов
     src=templates/nginx_vhosts.conf
     dest=/etc/nginx/sites-enabled/{{ domain }}.conf
-  when:
-    ansible_os_family == "Debian"
-  notify:
+  notify:   # Перезапуск nginx(handlers)
     - nginx restart
-- name: Install PHP-FPM
-  apt:
-    name=php-fpm
-    update_cache=yes
-    state=latest
