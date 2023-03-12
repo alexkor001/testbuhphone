@@ -30,7 +30,7 @@
 - name: Add virtual domain in NGINX  
   # vars:
   #   fastcgi_pass_path: /run/php/php7.4-fpm.sock
-  template:   # Замена  конфига в. хостов
+  template:   # Замена  конфига вирт. хостов
     src=templates/nginx_vhosts.conf
     dest=/etc/nginx/sites-enabled/{{ domain }}.conf
   notify:   # Перезапуск nginx(handlers)
