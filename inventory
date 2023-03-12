@@ -1,0 +1,9 @@
+all:
+  hosts:
+    test7:
+        domain: test7.akhancem.uz
+        ansible_port: 5555
+    test8:
+        domain: test8.akhancem.uz
+        ansible_port: 5555
+
